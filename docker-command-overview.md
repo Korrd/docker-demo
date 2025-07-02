@@ -90,3 +90,41 @@ docker-compose down
 ```sh
 docker-compose logs -f
 ```
+
+---
+
+## Docker Scout Commands (Image Analysis & Security)
+
+### Analyze a Local Image
+```sh
+docker scout quickview korrd2/my-web:3.12
+```
+
+### Compare Two Images
+```sh
+docker scout compare --to korrd2/my-web:3.11 korrd2/my-web:3.12
+```
+
+### Get a Detailed CVE Report
+```sh
+docker scout cves korrd2/my-web:3.12
+```
+
+### Check Recommendations for an Image
+```sh
+docker scout recommendations korrd2/my-web:3.12
+```
+
+---
+
+## Multistage Dockerfile Commands
+
+### Build an Image Using a Custom Dockerfile (e.g., Multistage)
+```sh
+docker build -f my-web/multistage.Dockerfile -t my-web-multistage ./my-web
+```
+
+### Run a Container from the Multistage Image
+```sh
+docker run --name my-web-demo-multistage -d -p 5000:5000 my-web-multistage
+```
