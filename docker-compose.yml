@@ -4,7 +4,7 @@ networks:
 
 services:
   traefik:
-    image: traefik:v2.11
+    image: traefik:v3.4.3
     command:
       - "--api.insecure=true" # Enable Traefik dashboard
       - "--providers.docker=true" # Enable Docker provider
