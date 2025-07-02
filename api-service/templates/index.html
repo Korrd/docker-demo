@@ -5,43 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API Service Demo</title>
-  <style>
-    :root {
-      color-scheme: dark;
-    }
-
-    body {
-      font-family: system-ui, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #121212;
-      color: #e0e0e0;
-    }
-
-    .card {
-      padding: 2em;
-      background: #1e1e1e;
-      border: 1px solid #333;
-      border-radius: 1em;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-      text-align: center;
-      max-width: 90%;
-    }
-
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 0.5em;
-      color: #90caf9;
-    }
-
-    p {
-      font-size: 1.2em;
-      color: #bbb;
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
