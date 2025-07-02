@@ -78,7 +78,7 @@ docker image rm korrd2/my-web:custom-tag
 
 ### Start All Services
 ```sh
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 ### Stop All Services
