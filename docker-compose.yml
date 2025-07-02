@@ -22,11 +22,8 @@ services:
 
   wordpress:
     image: wordpress:6.5
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_NAME: wp
-      WORDPRESS_DB_USER: wp
-      WORDPRESS_DB_PASSWORD: wp
+    env_file:
+      - .env
     volumes:
       - wordpress_data:/var/www/html
     labels:
@@ -41,11 +38,8 @@ services:
 
   db:
     image: mariadb:11
-    environment:
-      MYSQL_ROOT_PASSWORD: root # Shame on me!
-      MYSQL_DATABASE: wp
-      MYSQL_USER: wp
-      MYSQL_PASSWORD: wp
+    env_file:
+      - .env
     volumes:
       - db_data:/var/lib/mysql
     networks:

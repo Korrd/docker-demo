@@ -15,6 +15,9 @@ dist/
 
 # Docker
 *.log
+db_data/
+wordpress_data/
+.env
 
 # macOS
 .DS_Store
