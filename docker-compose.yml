@@ -17,8 +17,6 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - demo_net
-    depends_on:
-      - wordpress
 
   wordpress:
     image: wordpress:6.5
@@ -41,14 +39,14 @@ services:
     env_file:
       - .env
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql # Persist database data on docker volume
     networks:
       - demo_net
 
   web:
     build: ./my-web
     volumes:
-      - ./my-web:/app
+      - ./my-web:/app # Mount the local directory to the container
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.rule=Host(`web.localhost`)"
