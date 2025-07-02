@@ -1,24 +1,22 @@
-version: "3.8"
-
 networks:
-  docsy_net:
+  demo_net:
     driver: bridge
 
 services:
   traefik:
     image: traefik:v2.11
     command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
+      - "--api.insecure=true" # Enable Traefik dashboard
+      - "--providers.docker=true" # Enable Docker provider
+      - "--providers.docker.exposedbydefault=false" # Disable automatic exposure of containers
+      - "--entrypoints.web.address=:80" # Define entrypoint for HTTP
     ports:
       - "80:80"
       - "8080:8080" # Traefik dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
-      - docsy_net
+      - demo_net
     depends_on:
       - wordpress
 
@@ -32,26 +30,26 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wordpress.rule=Host(`wordpress.localhost`)"
-      - "traefik.http.routers.wordpress.entrypoints=web"
-      - "traefik.http.services.wordpress.loadbalancer.server.port=80"
+      - "traefik.enable=true" # Enable Traefik for this service
+      - "traefik.http.routers.wordpress.rule=Host(`wordpress.localhost`)" # Define routing rule for WordPress
+      - "traefik.http.routers.wordpress.entrypoints=web" # Use the web entrypoint
+      - "traefik.http.services.wordpress.loadbalancer.server.port=80" # Port WordPress listens on
     networks:
-      - docsy_net
+      - demo_net
     depends_on:
       - db
 
   db:
     image: mariadb:11
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root # Shame on me!
       MYSQL_DATABASE: wp
       MYSQL_USER: wp
       MYSQL_PASSWORD: wp
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - docsy_net
+      - demo_net
 
   api:
     build: ./api-service
@@ -61,7 +59,7 @@ services:
       - "traefik.http.routers.api.entrypoints=web"
       - "traefik.http.services.api.loadbalancer.server.port=5000"
     networks:
-      - docsy_net
+      - demo_net
 
 volumes:
   wordpress_data:
