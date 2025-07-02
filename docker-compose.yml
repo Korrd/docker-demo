@@ -10,13 +10,19 @@ services:
       - "--providers.docker=true" # Enable Docker provider
       - "--providers.docker.exposedbydefault=false" # Disable automatic exposure of containers
       - "--entrypoints.web.address=:80" # Define entrypoint for HTTP
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.entrypoint=metrics"
+      - "--entrypoints.metrics.address=:9100"
     ports:
       - "80:80"
       - "8080:8080" # Traefik dashboard
+      - "9100:9100"   # Prometheus metrics
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - demo_net
+    depends_on:
+      - wordpress
 
   wordpress:
     image: wordpress:6.5
@@ -55,6 +61,51 @@ services:
     networks:
       - demo_net
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - demo_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
+      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"   # Prometheus web UI
+    networks:
+      - demo_net
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    env_file:
+      - .env
+    networks:
+      - demo_net
+    depends_on:
+      - prometheus
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
 volumes:
   wordpress_data:
   db_data:
+  portainer_data:
+  grafana-data:
