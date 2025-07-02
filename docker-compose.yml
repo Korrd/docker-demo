@@ -52,12 +52,12 @@ services:
       - demo_net
 
   api:
-    build: ./api-service
+    build: ./my-web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.localhost`)"
-      - "traefik.http.routers.api.entrypoints=web"
-      - "traefik.http.services.api.loadbalancer.server.port=5000"
+      - "traefik.http.routers.web.rule=Host(`web.localhost`)"
+      - "traefik.http.routers.web.entrypoints=web"
+      - "traefik.http.services.web.loadbalancer.server.port=5000"
     networks:
       - demo_net
 
