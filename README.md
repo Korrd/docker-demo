@@ -2,6 +2,10 @@
 
 This repository demonstrates Docker and Docker Compose for local development, live code reloading, container orchestration, and observability. Intended for a developer-oriented Docker demo at ERNI.
 
+## Demo Slides
+
+Slides for this demo [can be found here](https://app.mural.co/t/vic6891/m/vic6891/1751354007942/1dce0cb11d2a77d331a1eca470a2d3b0831a1f57?sender=u248506648a704dfecee33067).
+
 ## Purpose
 
 Showcase how Docker Compose can:
