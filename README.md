@@ -1,50 +1,75 @@
-
 # Docker Demo for Developers @ ERNI
 
-This repository demonstrates how to use Docker and Docker Compose for local development, with a focus on live code reloading and containerized workflows. It is intended for a developer-oriented Docker demo at ERNI.
+This repository demonstrates Docker and Docker Compose for local development, live code reloading, container orchestration, and observability. Intended for a developer-oriented Docker demo at ERNI.
 
 ## Purpose
 
 Showcase how Docker Compose can:
-- Run multiple services (Python web app, WordPress, database, Traefik reverse proxy)
+- Run multiple services (Flask web app, WordPress, MariaDB, Traefik, Portainer, Prometheus, Grafana)
 - Enable live code changes using volume mounts
-- Simplify local development and testing
+- Simplify local development, testing, and monitoring
+- Provide a visual management UI (Portainer) and observability stack (Prometheus + Grafana)
 
 ## How It Works
 
-- The `web` service runs a simple Flask app (Python) with live reload enabled.
-- The `my-web` folder is mounted into the container, so changes in your IDE are instantly reflected in the running app.
-- Traefik acts as a reverse proxy, routing traffic to the correct service.
-- WordPress and MariaDB are included to show multi-service orchestration.
+- The `web` service runs a Flask app with live reload enabled. The `my-web` folder is mounted for instant code changes.
+- Traefik acts as a reverse proxy, routing traffic to all services by hostname.
+- WordPress and MariaDB demonstrate multi-service orchestration.
+- Portainer provides a web UI for managing containers.
+- Prometheus scrapes metrics (including from Traefik), and Grafana visualizes them.
 
 ## Usage
 
 1. **Clone this repository**
-  ```sh
-  git clone <repo-url>
-  cd docker-demo
-  ```
+   ```sh
+   git clone <repo-url>
+   cd docker-demo
+   ```
 
 2. **Start all services**
-  ```sh
-  docker-compose up -d --build
-  ```
+   ```sh
+   docker-compose up -d --build
+   ```
 
-3. **Add hosts to /etc/hosts**
-  ```sh
-  sudo echo "127.0.0.1 web.localhost >> /etc/hosts"
-  sudo echo "127.0.0.1 wordpress.localhost >> /etc/hosts"
-  ```
+3. **Add hostnames to /etc/hosts**
+   ```sh
+   echo -e "127.0.0.1 web.localhost\n127.0.0.1 wordpress.localhost\n127.0.0.1 portainer.localhost\n127.0.0.1 grafana.localhost" | sudo tee -a /etc/hosts
+   ```
 
-4. **Access the web app**
-  - Open [http://web.localhost](http://web.localhost) in your browser.
-  - Edit files in `my-web/` (e.g., `templates/index.html`). Refresh the browser to see changes instantly.
+4. **Access the services:**
+   - Flask web app: [http://web.localhost](http://web.localhost)
+   - WordPress: [http://wordpress.localhost](http://wordpress.localhost)
+   - Portainer UI: [http://portainer.localhost:9000](http://portainer.localhost:9000)
+   - Traefik dashboard: [http://localhost:8080](http://localhost:8080)
+   - Grafana: [http://grafana.localhost:3000](http://grafana.localhost:3000)
+   - Prometheus: [http://localhost:9090](http://localhost:9090)
 
-5. **Access WordPress**
-  - Open [http://wordpress.localhost](http://wordpress.localhost)
+5. **Live code reload**
+   - Edit files in `my-web/` (e.g., `templates/index.html`). Refresh the browser to see changes instantly.
 
-6. **Traefik Dashboard**
-  - Open [http://localhost:8080](http://localhost:8080)
+6. **Metrics and Observability**
+   - Prometheus scrapes metrics from Traefik at [http://localhost:9100/metrics](http://localhost:9100/metrics)
+   - Grafana dashboards can be configured to visualize these metrics.
+
+7. **Container Management**
+   - Use Portainer to visually manage and inspect your containers, images, and volumes.
+
+8. **Stop all services**
+   ```sh
+   docker-compose down
+   ```
+
+## Advanced: Multistage Docker Build
+
+To build and run the Flask app using the multistage Dockerfile:
+```sh
+docker build -f my-web/multistage.Dockerfile -t my-web-multistage ./my-web
+docker run --name my-web-demo-multistage -d -p 5000:5000 my-web-multistage
+```
+
+## Security
+- Secrets and credentials are stored in a `.env` file (gitignored).
+- For demo purposes, default passwords are used. **Do not use in production!**
 
 ---
 
