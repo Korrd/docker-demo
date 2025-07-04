@@ -30,17 +30,37 @@ Showcase how Docker Compose can:
    cd docker-demo
    ```
 
-2. **Start all services**
-   ```sh
-   docker-compose up -d --build
-   ```
-
-3. **Add hostnames to /etc/hosts**
+2. **Add hostnames to /etc/hosts**
    ```sh
    echo -e "127.0.0.1 web.localhost\n127.0.0.1 wordpress.localhost\n127.0.0.1 portainer.localhost\n127.0.0.1 grafana.localhost" | sudo tee -a /etc/hosts
    ```
 
-4. **Access the services:**
+3. **Create a .env file, and add these environment variables to it**
+
+   Do note that the `.env` file is gitignored.
+
+   ```bash
+   WORDPRESS_DB_HOST=db
+   WORDPRESS_DB_NAME=wp
+   WORDPRESS_DB_USER=wp
+   WORDPRESS_DB_PASSWORD=wp
+   MYSQL_ROOT_PASSWORD=root
+   MYSQL_DATABASE=wp
+   MYSQL_USER=wp
+   MYSQL_PASSWORD=wp
+   GF_SECURITY_ADMIN_USER=admin
+   GF_SECURITY_ADMIN_PASSWORD=admin
+   ```
+
+   > ℹ️ Default passwords are being used, as this is intended for educational purposes only on a local machine. **Never use this in production! Ever!**
+
+4. **Start all services**
+   ```sh
+   docker-compose up -d --build
+   ```
+
+
+5. **Access the services:**
    - Flask web app: [http://web.localhost](http://web.localhost)
    - WordPress: [http://wordpress.localhost](http://wordpress.localhost)
    - Portainer UI: [http://portainer.localhost:9000](http://portainer.localhost:9000)
@@ -48,17 +68,17 @@ Showcase how Docker Compose can:
    - Grafana: [http://grafana.localhost:3000](http://grafana.localhost:3000)
    - Prometheus: [http://localhost:9090](http://localhost:9090)
 
-5. **Live code reload**
+6. **Live code reload**
    - Edit files in `my-web/` (e.g., `templates/index.html`). Refresh the browser to see changes instantly.
 
-6. **Metrics and Observability**
+7. **Metrics and Observability**
    - Prometheus scrapes metrics from Traefik at [http://localhost:9100/metrics](http://localhost:9100/metrics)
    - Grafana dashboards can be configured to visualize these metrics.
 
-7. **Container Management**
+8. **Container Management**
    - Use Portainer to visually manage and inspect your containers, images, and volumes.
 
-8. **Stop all services**
+9. **Stop all services**
    ```sh
    docker-compose down
    ```
@@ -70,10 +90,6 @@ To build and run the Flask app using the multistage Dockerfile:
 docker build -f my-web/multistage.Dockerfile -t my-web-multistage ./my-web
 docker run --name my-web-demo-multistage -d -p 5000:5000 my-web-multistage
 ```
-
-## Security
-- Secrets and credentials are stored in a `.env` file (gitignored).
-- For demo purposes, default passwords are used. **Do not use in production!**
 
 ---
 
